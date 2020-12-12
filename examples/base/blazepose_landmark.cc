@@ -22,36 +22,6 @@
 
 namespace TNN_NS {
 
-template <typename KeyPointType, int d>
-struct GetCoord {
-    static float get(KeyPointType& p) {
-        return -1;
-    }
-};
-
-using KeyPoint2D = std::pair<float, float>;
-template<>
-struct GetCoord<KeyPoint2D, 0> {
-    static float get(KeyPoint2D& p) {
-        return p.first;
-    }
-};
-
-template<>
-struct GetCoord<KeyPoint2D, 1> {
-    static float get(KeyPoint2D& p) {
-        return p.second;
-    }
-};
-
-using KeyPoint3D = std::tuple<float, float, float>;
-template<int d>
-struct GetCoord<KeyPoint3D, d> {
-    static float get(KeyPoint3D& p) {
-        return std::get<d>(p);
-    }
-};
-
 template <typename KeyPointType>
 void BlazePoseLandmark::KeyPoints2RoI(std::vector<KeyPointType>& kps, const RoIGenOptions& option) {
     constexpr double PI = 3.141;
@@ -62,10 +32,10 @@ void BlazePoseLandmark::KeyPoints2RoI(std::vector<KeyPointType>& kps, const RoIG
     const int input_height = origin_input_shape[2];
     const int input_width  = origin_input_shape[3];
 
-    float x_center = GetCoord<KeyPointType, 0>::get(kps[start_kp_idx]) * input_width;
-    float y_center = GetCoord<KeyPointType, 1>::get(kps[start_kp_idx]) * input_height;
-    float x_scale  = GetCoord<KeyPointType, 0>::get(kps[end_kp_idx]) * input_width;
-    float y_scale  = GetCoord<KeyPointType, 1>::get(kps[end_kp_idx]) * input_height;
+    float x_center = kps[start_kp_idx].X() * input_width;
+    float y_center = kps[start_kp_idx].Y() * input_height;
+    float x_scale  = kps[end_kp_idx].X() * input_width;
+    float y_scale  = kps[end_kp_idx].Y() * input_height;
 
     // bounding box size as double distance from center to scale point.
     const float box_size = std::sqrt((x_scale - x_center) * (x_scale - x_center) +

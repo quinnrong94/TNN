@@ -16,7 +16,8 @@
 
 namespace TNN_NS {
 
-static float GetObjectScale(const NormalizedLandmarkList& landmarks, int image_width,
+template <typename NormLandmarkList>
+static float GetObjectScale(const NormLandmarkList& landmarks, int image_width,
                             int image_height) {
     const auto& lm_min_x = std::min_element(
                                             landmarks.begin(), landmarks.end(),
@@ -30,37 +31,6 @@ static float GetObjectScale(const NormalizedLandmarkList& landmarks, int image_w
     
     const float x_min = lm_min_x->X();
     const float x_max = lm_max_x->X();
-    
-    const auto& lm_min_y = std::min_element(
-                                            landmarks.begin(), landmarks.end(),
-                                            [](const auto& a, const auto& b) { return a.Y() < b.Y(); });
-    const auto& lm_max_y = std::max_element(
-                                            landmarks.begin(), landmarks.end(),
-                                            [](const auto& a, const auto& b) { return a.Y() > b.Y(); });
-    
-    const float y_min = lm_min_y->Y();
-    const float y_max = lm_max_y->Y();
-    
-    const float object_width = (x_max - x_min) * image_width;
-    const float object_height = (y_max - y_min) * image_height;
-    
-    return (object_width + object_height) / 2.0f;
-}
-
-static float GetObjectScale(const Normalized2DLandmarkList& landmarks, int image_width,
-                            int image_height) {
-    const auto& lm_min_x = std::min_element(
-                                            landmarks.begin(), landmarks.end(),
-                                            [](const auto& a, const auto& b) { return a.X() < b.X(); });
-    const auto& lm_max_x = std::max_element(
-                                            landmarks.begin(), landmarks.end(),
-                                            [](const auto& a, const auto& b) { return a.X() > b.X(); });
-    
-    if (landmarks.size() <= 0)
-        return 0;
-    
-    const float x_min = lm_min_x->X();
-    const float x_max = lm_max_x->Y();
     
     const auto& lm_min_y = std::min_element(
                                             landmarks.begin(), landmarks.end(),
