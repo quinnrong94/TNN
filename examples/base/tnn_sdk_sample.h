@@ -47,7 +47,7 @@ struct ObjectInfo {
     //key_points <x y>
     std::vector<Landmark2D> key_points = {};
     //key_points_3d <x y z>
-    std::vector<triple<float,float,float>> key_points_3d = {};
+    std::vector<Landmark3D> key_points_3d = {};
     //lines connecting key_points
     std::vector<std::pair<int, int>> lines;
     

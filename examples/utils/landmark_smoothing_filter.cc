@@ -20,26 +20,26 @@ static float GetObjectScale(const NormalizedLandmarkList& landmarks, int image_w
                             int image_height) {
     const auto& lm_min_x = std::min_element(
                                             landmarks.begin(), landmarks.end(),
-                                            [](const auto& a, const auto& b) { return std::get<0>(a) < std::get<0>(b); });
+                                            [](const auto& a, const auto& b) { return a.X() < b.X(); });
     const auto& lm_max_x = std::max_element(
                                             landmarks.begin(), landmarks.end(),
-                                            [](const auto& a, const auto& b) { return std::get<0>(a) > std::get<0>(b); });
+                                            [](const auto& a, const auto& b) { return a.X() > b.X(); });
     
     if (landmarks.size() <= 0)
         return 0;
     
-    const float x_min = std::get<0>(*lm_min_x);
-    const float x_max = std::get<0>(*lm_max_x);
+    const float x_min = lm_min_x->X();
+    const float x_max = lm_max_x->X();
     
     const auto& lm_min_y = std::min_element(
                                             landmarks.begin(), landmarks.end(),
-                                            [](const auto& a, const auto& b) { return std::get<1>(a) < std::get<1>(b); });
+                                            [](const auto& a, const auto& b) { return a.Y() < b.Y(); });
     const auto& lm_max_y = std::max_element(
                                             landmarks.begin(), landmarks.end(),
-                                            [](const auto& a, const auto& b) { return std::get<1>(a) > std::get<1>(b); });
+                                            [](const auto& a, const auto& b) { return a.Y() > b.Y(); });
     
-    const float y_min = std::get<1>(*lm_min_y);
-    const float y_max = std::get<1>(*lm_max_y);
+    const float y_min = lm_min_y->Y();
+    const float y_max = lm_max_y->Y();
     
     const float object_width = (x_max - x_min) * image_width;
     const float object_height = (y_max - y_min) * image_height;
@@ -86,9 +86,9 @@ TNN_NS::Status VelocityFilter::Reset() {
 }
 
 bool VelocityFilter::isValidLandMark(const NormalizedLandmark& m) {
-    bool valid = (std::get<0>(m) >= 0 &&
-                  std::get<1>(m) >= 0 &&
-                  std::get<2>(m) >= 0);
+    bool valid = (m.X() >= 0 &&
+                  m.Y() >= 0 &&
+                  m.Z() >= 0);
     return valid;
 }
 
@@ -135,13 +135,13 @@ TNN_NS::Status VelocityFilter::Apply(const NormalizedLandmarkList& in_landmarks,
         }
         
         float out_x = x_filters_[i].Apply(timestamp, value_scale,
-                                          std::get<0>(in_landmark) * image_width) / image_width;
+                                          in_landmark.X() * image_width) / image_width;
         float out_y = y_filters_[i].Apply(timestamp, value_scale,
-                                          std::get<1>(in_landmark) * image_height) / image_height;
+                                          in_landmark.Y() * image_height) / image_height;
         float out_z = z_filters_[i].Apply(timestamp, value_scale,
-                                          std::get<2>(in_landmark) * image_width) / image_width;
+                                          in_landmark.Z() * image_width) / image_width;
         
-        NormalizedLandmark out_landmark = std::make_tuple(out_x, out_y, out_z);
+        NormalizedLandmark out_landmark = Landmark3D(out_x, out_y, out_z);
         out_landmarks->push_back(std::move(out_landmark));
     }
     

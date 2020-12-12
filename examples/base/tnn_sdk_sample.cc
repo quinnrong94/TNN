@@ -99,13 +99,9 @@ ObjectInfo ObjectInfo::FlipX() {
     }
     
     //key points 3d
-    std::vector<triple<float, float, float>> key_points_3d;
     for (auto item : this->key_points_3d) {
-        key_points_3d.push_back(std::make_tuple(this->image_width - std::get<0>(item),
-                                                                     std::get<1>(item),
-                                                                     std::get<2>(item)));
+        info.key_points_3d.emplace_back(this->image_width - item.X(), item.Y(), item.Z());
     }
-    info.key_points_3d = key_points_3d;
     return info;
 }
 
@@ -128,13 +124,11 @@ ObjectInfo ObjectInfo::AddOffset(float offset_x, float offset_y) {
     }
     
     //key points 3d
-    std::vector<triple<float, float, float>> key_points_3d;
     for (auto item : this->key_points_3d) {
-        key_points_3d.push_back(std::make_tuple(std::get<0>(item) + offset_x,
-                                                                     std::get<1>(item) + offset_y,
-                                                                     std::get<2>(item)));
+        info.key_points_3d.emplace_back(item.X() + offset_x,
+                                        item.Y() + offset_y,
+                                        item.Z());
     }
-    info.key_points_3d = key_points_3d;
     return info;
 }
 
@@ -188,13 +182,11 @@ ObjectInfo ObjectInfo::AdjustToImageSize(int orig_image_height, int orig_image_w
     }
     
     //key points 3d
-    std::vector<triple<float, float, float>> key_points_3d;
     for (auto item : this->key_points_3d) {
-        key_points_3d.push_back(std::make_tuple(std::get<0>(item) * scale_x,
-                                                                     std::get<1>(item) * scale_y,
-                                                                     std::get<2>(item)));
+        info_orig.key_points_3d.emplace_back(item.X() * scale_x,
+                                             item.Y() * scale_y,
+                                             item.Z());
     }
-    info_orig.key_points_3d = key_points_3d;
     info_orig.lines = lines;
     
     return info_orig;

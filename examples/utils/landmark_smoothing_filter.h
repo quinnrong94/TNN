@@ -28,7 +28,7 @@
 
 namespace TNN_NS {
 
-using NormalizedLandmark = std::tuple<float,float,float>;
+using NormalizedLandmark = Landmark3D;
 using NormalizedLandmarkList = std::vector<NormalizedLandmark>;
 
 using Normalized2DLandmark = Landmark2D;

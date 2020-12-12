@@ -278,7 +278,7 @@ void BlazePoseLandmark::ProcessLandmarks(Mat& landmark_mat, std::vector<BlazePos
         float y = landmark_data[offset + 1] / input_height;
         float z = landmark_data[offset + 2] / input_width;
         //float visibility = landmark_data[offset + 3];
-        info.key_points_3d[i] = std::make_tuple(x, y, z);
+        info.key_points_3d[i] = Landmark3D(x, y, z);
     }
     info.lines = this->lines;
     detects.push_back(std::move(info));
@@ -292,9 +292,9 @@ void BlazePoseLandmark::RemoveLetterBoxAndProjection(std::vector<BlazePoseInfo>&
 
     for(auto& lm3d: detects[0].key_points_3d) {
         // remove letterbox
-        float x = (std::get<0>(lm3d) - left) / (1.0f - left_and_right);
-        float y = (std::get<1>(lm3d) - top) / (1.0f - top_and_bottom);
-        float z = std::get<2>(lm3d) / (1.0f - left_and_right);  // scale z coordinate as X.
+        float x = (lm3d.X() - left) / (1.0f - left_and_right);
+        float y = (lm3d.Y() - top) / (1.0f - top_and_bottom);
+        float z = lm3d.Z() / (1.0f - left_and_right);  // scale z coordinate as X.
         // projection
         x = x - 0.5f;
         y = y - 0.5f;
@@ -306,7 +306,7 @@ void BlazePoseLandmark::RemoveLetterBoxAndProjection(std::vector<BlazePoseInfo>&
         y = y * roi.height + roi.y_center;
         z = z * roi.width;  // scale z coordinate as X.
 
-        lm3d = std::make_tuple(x, y, z);
+        lm3d = Landmark3D(x, y, z);
     }
 }
 
@@ -315,10 +315,7 @@ void BlazePoseLandmark::DeNormalize(std::vector<BlazePoseInfo>& detects) {
     const int src_width  = origin_input_shape[3];
 
     for(auto& lm3d: detects[0].key_points_3d) {
-        float x = std::get<0>(lm3d) * src_width;
-        float y = std::get<1>(lm3d) * src_height;
-        float z = std::get<2>(lm3d) * src_width;  // scale z coordinate as X.
-        lm3d = std::make_tuple(x, y, z);
+        lm3d.Scale(src_width, src_height, src_width);
     }
     detects[0].image_height = src_height;
     detects[0].image_width  = src_width;
@@ -326,7 +323,7 @@ void BlazePoseLandmark::DeNormalize(std::vector<BlazePoseInfo>& detects) {
 
 void BlazePoseLandmark::SmoothingLandmarks(std::vector<BlazePoseInfo> &detects) {
     auto image_size = std::make_pair(this->origin_input_shape[2], this->origin_input_shape[3]);
-    std::vector<KeyPoint3D> out_landmarks;
+    std::vector<Landmark3D> out_landmarks;
     landmark_filter->Apply(detects[0].key_points_3d, image_size, Now(), &out_landmarks);
     if (out_landmarks.size() > 0) {
         detects[0].key_points_3d = out_landmarks;

@@ -158,7 +158,7 @@ void Facemesh::GenerateLandmarks(std::vector<FacemeshInfo> &detects, TNN_NS::Mat
         x = round(x * image_w);
         y = round(y * image_h);
         
-        info.key_points_3d.push_back(std::make_tuple(x, y, z));
+        info.key_points_3d.emplace_back(x, y, z);
         info.key_points.emplace_back(x, y);
     }
     detects.push_back(std::move(info));

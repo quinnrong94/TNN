@@ -348,7 +348,9 @@ using namespace TNN_NS;
                         face_mesh_crop = face_mesh_crop.AddOffset(crop_rect.origin.x, crop_rect.origin.y);
                         //TODO: how to draw 2d points accoring to the 3d landmark
                         for(auto& p:face_mesh_crop.key_points_3d) {
-                            TNN_NS::Point((void*)image_data.get(), image_orig_height, image_orig_width, std::get<0>(p), std::get<1>(p), std::get<2>(p)*(-7));
+                            TNN_NS::Point((void*)image_data.get(), image_orig_height, image_orig_width, p.X(),
+                                          p.Y(),
+                                          p.Z()*(-7));
                         }
                     }
                     UIImage *output_image = utility::UIImageWithDataRGBA((void *)image_data.get(), image_orig_height, image_orig_width);
@@ -499,7 +501,9 @@ using namespace TNN_NS;
                 face_mesh_crop = face_mesh_crop.AddOffset(crop_rect.origin.x, crop_rect.origin.y);
                 //TODO: how to draw 2d points accoring to the 3d landmark
                 for(auto& p:face_mesh_crop.key_points_3d) {
-                    TNN_NS::Point((void*)image_orig_data.get(), image_orig_height, image_orig_width, std::get<0>(p), std::get<1>(p), std::get<2>(p)*(-7));
+                    TNN_NS::Point((void*)image_orig_data.get(), image_orig_height, image_orig_width, p.X(),
+                                  p.Y(),
+                                  p.Z()*(-7));
                 }
             }
 
