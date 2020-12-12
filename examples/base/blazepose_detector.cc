@@ -255,7 +255,7 @@ void BlazePoseDetector::GenerateBBox(std::vector<BlazePoseInfo> &detects, Mat &s
         for (int kp_id = 0; kp_id < decode_options.num_keypoints; kp_id += 1) {
             float kpx = boxes[keypoint_index + 0];
             float kpy = boxes[keypoint_index + 1];
-            info.key_points.push_back(std::make_pair(kpx, kpy));
+            info.key_points.emplace_back(kpx,kpy);
 
             keypoint_index += decode_options.num_values_per_keypoint;
         }
@@ -355,10 +355,10 @@ void BlazePoseDetector::RemoveLetterBox(std::vector<BlazePoseInfo>& detects) {
         pose.x2 = (pose.x2 - left) / (1.0f - left_and_right);
         pose.y2 = (pose.y2 - top)  / (1.0f - top_and_bottom);
         for (int i = 0; i<pose.key_points.size(); ++i) {
-            auto kp = pose.key_points[i];
-            const float new_x = (kp.first  - left) / (1.0f - left_and_right);
-            const float new_y = (kp.second - top)  / (1.0f - top_and_bottom);
-            pose.key_points[i] = std::make_pair(new_x, new_y);
+            auto& kp = pose.key_points[i];
+            const float new_x = (kp.X()  - left) / (1.0f - left_and_right);
+            const float new_y = (kp.Y() - top)  / (1.0f - top_and_bottom);
+            pose.key_points[i] = Landmark2D(new_x, new_y);
         }
     }
 }

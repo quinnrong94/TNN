@@ -24,6 +24,7 @@
 #include "tnn/utils/blob_converter.h"
 #include "tnn/utils/mat_utils.h"
 #include "tnn/utils/dims_vector_utils.h"
+#include "landmark.h"
 
 #define TNN_SDK_ENABLE_BENCHMARK 1
 
@@ -44,7 +45,7 @@ struct ObjectInfo {
     float y2 = 0;
 
     //key_points <x y>
-    std::vector<std::pair<float, float>> key_points = {};
+    std::vector<Landmark2D> key_points = {};
     //key_points_3d <x y z>
     std::vector<triple<float,float,float>> key_points_3d = {};
     //lines connecting key_points

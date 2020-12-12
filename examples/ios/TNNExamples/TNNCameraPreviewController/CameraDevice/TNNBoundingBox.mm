@@ -97,7 +97,7 @@
     [CATransaction setDisableActions:NO];
 }
 
-- (void)showMarkAtPoints:(std::vector<std::pair<float, float>>)points withColor:(UIColor *)color
+- (void)showMarkAtPoints:(std::vector<TNN_NS::Landmark2D>&)points withColor:(UIColor *)color
                   circle:(BOOL)circle {
     [CATransaction setDisableActions:YES];
     
@@ -127,12 +127,12 @@
             auto pt = points[i];
             auto path = [UIBezierPath bezierPath];
             if (circle == NO) {
-                [path moveToPoint:CGPointMake(pt.first-2, pt.second)];
-                [path addLineToPoint:CGPointMake(pt.first+2, pt.second)];
-                [path moveToPoint:CGPointMake(pt.first, pt.second-2)];
-                [path addLineToPoint:CGPointMake(pt.first, pt.second+2)];
+                [path moveToPoint:CGPointMake(pt.X()-2, pt.Y())];
+                [path addLineToPoint:CGPointMake(pt.X()+2, pt.Y())];
+                [path moveToPoint:CGPointMake(pt.X(), pt.Y()-2)];
+                [path addLineToPoint:CGPointMake(pt.X(), pt.Y()+2)];
             } else {
-                CGPoint center = CGPointMake(pt.first, pt.second);
+                CGPoint center = CGPointMake(pt.X(), pt.Y());
                 [path addArcWithCenter:center radius:2 startAngle:0 endAngle:2 * M_PI clockwise:YES];
             }
             [path closePath];
@@ -149,7 +149,7 @@
     [CATransaction setDisableActions:NO];
 }
 
-- (void)showLines:(std::vector<std::pair<float, float>>)points lines:(std::vector<std::pair<int, int>>)lines
+- (void)showLines:(std::vector<TNN_NS::Landmark2D>&)points lines:(std::vector<std::pair<int, int>>)lines
         withColor:(UIColor *)color {
     [CATransaction setDisableActions:YES];
     
@@ -187,8 +187,8 @@
             auto end_point = points[line_end];
             auto path = [UIBezierPath bezierPath];
             path.lineWidth = 4.0;
-            [path moveToPoint:CGPointMake(start_point.first, start_point.second)];
-            [path addLineToPoint:CGPointMake(end_point.first, end_point.second)];
+            [path moveToPoint:CGPointMake(start_point.X(), start_point.Y())];
+            [path addLineToPoint:CGPointMake(end_point.X(), end_point.Y())];
             [path closePath];
             
             layer.path = path.CGPath;

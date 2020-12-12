@@ -102,7 +102,7 @@ Status YoutuFaceAlign::ProcessSDKOutput(std::shared_ptr<TNNSDKOutput> output_) {
     face.key_points.resize(pts_cnt);
 
     for(int i=0; i<pts_cnt; ++i) {
-        face.key_points[i] = std::make_pair(pts_data[i * pts_dim + 0], pts_data[i * pts_dim + 1]);
+        face.key_points[i] = Landmark2D(pts_data[i * pts_dim + 0], pts_data[i * pts_dim + 1]);
     }
 
     output->face = std::move(face);

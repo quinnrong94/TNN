@@ -19,6 +19,7 @@
 
 #include "relative_velocity_filter.h"
 #include "time_stamp.h"
+#include "landmark.h"
 #include <vector>
 #include <utility>
 #include <algorithm>
@@ -30,7 +31,7 @@ namespace TNN_NS {
 using NormalizedLandmark = std::tuple<float,float,float>;
 using NormalizedLandmarkList = std::vector<NormalizedLandmark>;
 
-using Normalized2DLandmark = std::pair<float,float>;
+using Normalized2DLandmark = Landmark2D;
 using Normalized2DLandmarkList = std::vector<Normalized2DLandmark>;
 
 class VelocityFilter {

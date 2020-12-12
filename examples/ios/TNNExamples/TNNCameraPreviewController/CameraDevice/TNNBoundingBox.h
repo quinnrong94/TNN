@@ -16,6 +16,7 @@
 #import <UIKit/UIKit.h>
 #include <memory>
 #include <vector>
+#include "landmark.h"
 
 @interface TNNBoundingBox : NSObject
 @property (nonatomic, strong, readonly) CAShapeLayer *boxLayer;
@@ -29,8 +30,8 @@
 -(void)removeFromSuperLayer;
 
 - (void)showText:(NSString *)text withColor:(UIColor *)color atFrame:(CGRect)frame;
-- (void)showMarkAtPoints:(std::vector<std::pair<float, float>>)points withColor:(UIColor *)color circle:(BOOL)circle;
-- (void)showLines:(std::vector<std::pair<float, float>>)points lines:(std::vector<std::pair<int, int>>)lines
+- (void)showMarkAtPoints:(std::vector<TNN_NS::Landmark2D>&)points withColor:(UIColor *)color circle:(BOOL)circle;
+- (void)showLines:(std::vector<TNN_NS::Landmark2D>&)points lines:(std::vector<std::pair<int, int>>)lines
         withColor:(UIColor *)color;
 - (void)hide;
 @end

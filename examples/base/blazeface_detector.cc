@@ -117,7 +117,7 @@ void BlazeFaceDetector::GenerateBBox(std::vector<BlazeFaceInfo> &detects, TNN_NS
             int offset = j * 2 + 4;
             float kp_x = (boxes_data[i * detect_dims + offset + 0] / image_w * anchors[i * 4 + 2] + anchors[i * 4 + 0]) * image_w;
             float kp_y = (boxes_data[i * detect_dims + offset + 1] / image_h * anchors[i * 4 + 3] + anchors[i * 4 + 1]) * image_h;
-            info.key_points.push_back(std::make_pair(kp_x, kp_y));
+            info.key_points.emplace_back(kp_x, kp_y);
         }
         detects.push_back(std::move(info));
     }

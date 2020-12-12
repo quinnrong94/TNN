@@ -51,26 +51,26 @@ static float GetObjectScale(const Normalized2DLandmarkList& landmarks, int image
                             int image_height) {
     const auto& lm_min_x = std::min_element(
                                             landmarks.begin(), landmarks.end(),
-                                            [](const auto& a, const auto& b) { return a.first < b.first; });
+                                            [](const auto& a, const auto& b) { return a.X() < b.X(); });
     const auto& lm_max_x = std::max_element(
                                             landmarks.begin(), landmarks.end(),
-                                            [](const auto& a, const auto& b) { return a.first > b.first; });
+                                            [](const auto& a, const auto& b) { return a.X() > b.X(); });
     
     if (landmarks.size() <= 0)
         return 0;
     
-    const float x_min = lm_min_x->first;
-    const float x_max = lm_max_x->first;
+    const float x_min = lm_min_x->X();
+    const float x_max = lm_max_x->Y();
     
     const auto& lm_min_y = std::min_element(
                                             landmarks.begin(), landmarks.end(),
-                                            [](const auto& a, const auto& b) { return a.second < b.second; });
+                                            [](const auto& a, const auto& b) { return a.Y() < b.Y(); });
     const auto& lm_max_y = std::max_element(
                                             landmarks.begin(), landmarks.end(),
-                                            [](const auto& a, const auto& b) { return a.second > b.second; });
+                                            [](const auto& a, const auto& b) { return a.Y() > b.Y(); });
     
-    const float y_min = lm_min_y->second;
-    const float y_max = lm_max_y->second;
+    const float y_min = lm_min_y->Y();
+    const float y_max = lm_max_y->Y();
     
     const float object_width = (x_max - x_min) * image_width;
     const float object_height = (y_max - y_min) * image_height;
@@ -93,7 +93,7 @@ bool VelocityFilter::isValidLandMark(const NormalizedLandmark& m) {
 }
 
 bool VelocityFilter::isValidLandMark(const Normalized2DLandmark& m) {
-    bool valid = (m.first >=0) && (m.second >= 0);
+    bool valid = (m.X() >=0) && (m.Y() >= 0);
     return valid;
 }
 
@@ -186,11 +186,11 @@ TNN_NS::Status VelocityFilter::Apply2D(const Normalized2DLandmarkList& in_landma
         }
         
         float out_x = x_filters_[i].Apply(timestamp, value_scale,
-                                          in_landmark.first * image_width) / image_width;
+                                          in_landmark.X() * image_width) / image_width;
         float out_y = y_filters_[i].Apply(timestamp, value_scale,
-                                          in_landmark.second * image_height) / image_height;
+                                          in_landmark.Y() * image_height) / image_height;
         
-        Normalized2DLandmark out_landmark = std::make_pair(out_x, out_y);
+        Normalized2DLandmark out_landmark = Landmark2D(out_x, out_y);
         out_landmarks->push_back(std::move(out_landmark));
     }
     

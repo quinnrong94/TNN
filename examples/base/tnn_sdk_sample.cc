@@ -94,11 +94,9 @@ ObjectInfo ObjectInfo::FlipX() {
     info.y2 = this->y2;
     
     //key points
-    std::vector<std::pair<float, float>> key_points;
     for (auto item : this->key_points) {
-        key_points.push_back(std::make_pair(this->image_width - item.first, item.second));
+        info.key_points.emplace_back(this->image_width-item.X(), item.Y());
     }
-    info.key_points = key_points;
     
     //key points 3d
     std::vector<triple<float, float, float>> key_points_3d;
@@ -117,6 +115,7 @@ ObjectInfo ObjectInfo::AddOffset(float offset_x, float offset_y) {
     info.class_id = this->class_id;
     info.image_width = this->image_width;
     info.image_height = this->image_width;
+    info.lines = this->lines;
     
     info.x1 = this->x1 + offset_x;
     info.x2 = this->x2 + offset_x;
@@ -124,11 +123,9 @@ ObjectInfo ObjectInfo::AddOffset(float offset_x, float offset_y) {
     info.y2 = this->y2 + offset_y;
     
     //key points
-    std::vector<std::pair<float, float>> key_points;
     for (auto item : this->key_points) {
-        key_points.push_back(std::make_pair(item.first + offset_x, item.second + offset_y));
+        info.key_points.emplace_back(item.X() + offset_x, item.Y() + offset_y);
     }
-    info.key_points = key_points;
     
     //key points 3d
     std::vector<triple<float, float, float>> key_points_3d;
@@ -186,11 +183,9 @@ ObjectInfo ObjectInfo::AdjustToImageSize(int orig_image_height, int orig_image_w
     
     
     //key points
-    std::vector<std::pair<float, float>> key_points;
     for (auto item : this->key_points) {
-        key_points.push_back(std::make_pair(item.first*scale_x, item.second*scale_y));
+        info_orig.key_points.emplace_back(item.X() * scale_x, item.Y() * scale_y);
     }
-    info_orig.key_points = key_points;
     
     //key points 3d
     std::vector<triple<float, float, float>> key_points_3d;
@@ -885,8 +880,9 @@ void NMS(std::vector<ObjectInfo> &input, std::vector<ObjectInfo> &output, float 
                     rects.y2 += buf[i].y2 * rate;
                     rects.score += buf[i].score * rate;
                     for(int j = 0; j < buf[i].key_points.size(); ++j) {
-                        rects.key_points[j].first += buf[i].key_points[j].first * rate;
-                        rects.key_points[j].second += buf[i].key_points[j].second * rate;
+                        const auto& orig_kpt = buf[i].key_points[j];
+                        rects.key_points[j].X() += orig_kpt.X() * rate;
+                        rects.key_points[j].Y() += orig_kpt.Y() * rate;
                     }
                     rects.image_height = buf[0].image_height;
                     rects.image_width  = buf[0].image_width;
@@ -910,8 +906,9 @@ void NMS(std::vector<ObjectInfo> &input, std::vector<ObjectInfo> &output, float 
                     rects.y2 += buf[i].y2 * rate;
                     rects.score += buf[i].score * rate;
                     for(int j = 0; j < buf[i].key_points.size(); ++j) {
-                        rects.key_points[j].first += buf[i].key_points[j].first * rate;
-                        rects.key_points[j].second += buf[i].key_points[j].second * rate;
+                        const auto& orig_kpt = buf[i].key_points[j];
+                        rects.key_points[j].X() += orig_kpt.X() * rate;
+                        rects.key_points[j].Y() += orig_kpt.Y() * rate;
                     }
                     rects.image_height = buf[0].image_height;
                     rects.image_width  = buf[0].image_width;

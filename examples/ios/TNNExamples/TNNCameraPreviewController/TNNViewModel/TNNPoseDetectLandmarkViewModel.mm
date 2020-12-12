@@ -138,7 +138,7 @@ using namespace std;
         for (auto item : body_output->body_list) {
             auto body = std::make_shared<BlazePoseInfo>();
             for(const auto& kp3d: item.key_points_3d) {
-                item.key_points.push_back(std::make_pair(std::get<0>(kp3d), std::get<1>(kp3d)));
+                item.key_points.emplace_back(std::get<0>(kp3d), std::get<1>(kp3d));
             }
             *body = item;
             body_list.push_back(body);

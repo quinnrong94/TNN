@@ -190,7 +190,8 @@ using namespace TNN_NS;
         Rectangle((void *)image_orig_data.get(), image_orig_height, image_orig_width, face_orig.x1, face_orig.y1, face_orig.x2,
                       face_orig.y2);
         for(auto& p:face_orig.key_points) {
-            TNN_NS::Point((void*)image_orig_data.get(), image_orig_height, image_orig_width, p.first, p.second, 1);
+            TNN_NS::Point((void*)image_orig_data.get(), image_orig_height, image_orig_width,
+                          p.X(), p.Y(), 1);
         }
     }
     
