@@ -12,11 +12,14 @@ PLIST_PATH=$TNN_BUILD_PATH/tnn/Info.plist
 TNN_VERSION_PATH=$TNN_ROOT_PATH/scripts/version
 
 # iPhone、iPhone+Simulator、 Mac
-DEVICE_PLATFORM="iPhone+Simulator"
-# DEVICE_PLATFORM="Mac"
+#DEVICE_PLATFORM="iPhone+Simulator"
+DEVICE_PLATFORM="iPhone"
+#DEVICE_PLATFORM="Mac"
+ENABLE_ARM82=true
 
 SDK_VERSION=0.2.0
 TARGET_NAME="tnn"
+TARGET_ARM82_NAME="tnn-arm82"
 CONFIGURATION="Release"
 XCODE_VERSION=`xcodebuild -version | awk 'NR == 1 {print $2}'`
 XCODE_MAJOR_VERSION=`echo $XCODE_VERSION | awk -F. '{print $1}'`
@@ -32,7 +35,7 @@ cd $TNN_BUILD_PATH
 echo ' '
 echo '******************** step 2: start build rpn ********************'
 #删除旧SDK文件
-#rm -r ./${TARGET_NAME}.bundle
+rm -r ./${TARGET_NAME}.bundle
 rm -r ./${TARGET_NAME}.framework
 rm -r build
 
@@ -52,8 +55,17 @@ if [[ $DEVICE_PLATFORM == iPhone* ]]; then
   echo '******************** Build iPhone SDK ********************'
   # 指定 arm64
   # xcodebuild -target "$TARGET_NAME" -configuration ${CONFIGURATION}  -sdk iphoneos -arch arm64 build
-  xcodebuild -quiet -target "$TARGET_NAME" -configuration ${CONFIGURATION}  -sdk iphoneos build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
-  cp -r build/$CONFIGURATION-iphoneos/$TARGET_NAME.framework build
+  if [ $ENABLE_ARM82 = true ];then
+      xcodebuild -quiet -target "$TARGET_ARM82_NAME" -configuration ${CONFIGURATION}  -sdk iphoneos build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+      # rename the framwork
+      cp -r build/$CONFIGURATION-iphoneos/$TARGET_ARM82_NAME.framework build/$CONFIGURATION-iphoneos/$TARGET_NAME.framework
+      # rename the library
+      mv build/$CONFIGURATION-iphoneos/$TARGET_NAME.framework/$TARGET_ARM82_NAME build/$CONFIGURATION-iphoneos/$TARGET_NAME.framework/$TARGET_NAME
+      cp -r build/$CONFIGURATION-iphoneos/$TARGET_NAME.framework build
+  else
+      xcodebuild -quiet -target "$TARGET_NAME" -configuration ${CONFIGURATION}  -sdk iphoneos build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+      cp -r build/$CONFIGURATION-iphoneos/$TARGET_NAME.framework build
+  fi
 elif [ $DEVICE_PLATFORM == "Mac" ]; then
   echo ' '
   echo '******************** Build Mac SDK ********************'

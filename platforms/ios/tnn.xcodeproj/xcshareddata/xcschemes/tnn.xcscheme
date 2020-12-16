@@ -20,6 +20,20 @@
                ReferencedContainer = "container:tnn.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "EC07C9D42588F66900C8A89F"
+               BuildableName = "tnn-arm82.framework"
+               BlueprintName = "tnn-arm82"
+               ReferencedContainer = "container:tnn.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
