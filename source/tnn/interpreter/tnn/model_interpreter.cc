@@ -291,7 +291,7 @@ Status ModelInterpreter::InterpretModel(std::string &model_content) {
     content_stream.str(model_content);
 
     uint32_t magic_version_number = 0;
-    content_stream.read(reinterpret_cast<char *>(&magic_version_number), sizeof(g_version_magic_number));
+    content_stream.read(reinterpret_cast<char *>(&magic_version_number), sizeof(g_version_magic_number_v2));
     if (!IsValidVersionNumber(magic_version_number)) {
         content_stream.seekg(0, std::ios::beg);
     }

@@ -25,7 +25,7 @@ std::string ModelPacker::Transfer(std::string content) {
 }
 
 uint32_t ModelPacker::GetMagicNumber() {
-    return g_version_magic_number;
+    return g_version_magic_number_v2;
 }
 
 std::shared_ptr<Serializer> ModelPacker::GetSerializer(std::ostream &os) {

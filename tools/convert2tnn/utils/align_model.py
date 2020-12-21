@@ -29,6 +29,9 @@ import sys
 import tensorflow as tf
 import numpy as np
 
+TNN_MAGIC_NUMBER = 0x0FABC0002
+TNN_MAGIC_NUMBER_V2 = 0x0FABC0004
+
 
 def run_tnn_model_check(proto_path, model_path, input_path, reference_output_path, is_tflite=False):
     cmd.run("pwd")
@@ -158,14 +161,26 @@ def get_input_shape_from_tflite(tflite_path)->dict:
        input_info.update({name: [int(n), int(c), int(h), int(w)]})
     return input_info
 
+
 def get_input_shape_from_tnn(tnn_proto_path):
     input_info: dict = {}
-    line = linecache.getline(tnn_proto_path, 2).strip(
-        '\n').strip('\"').strip(',')
-    input_list = line.split(':')
-    for input in input_list:
-        name, n, c, h, w = input.strip(' ').split(' ')
-        input_info.update({name: [int(n), int(c), int(h), int(w)]})
+    magic_number = linecache.getline(tnn_proto_path, 1).strip('\n').strip('\"').strip(',').strip(' ').split(" ")[-1]
+    magic_number = int(magic_number)
+    if magic_number == TNN_MAGIC_NUMBER:
+        line = linecache.getline(tnn_proto_path, 2).strip('\n').strip('\"').strip(',')
+        input_list = line.split(':')
+        for tnn_input in input_list:
+            name, n, c, h, w = tnn_input.strip(' ').split(' ')
+            input_info.update({name: [int(n), int(c), int(h), int(w)]})
+    elif magic_number == TNN_MAGIC_NUMBER_V2:
+        line = linecache.getline(tnn_proto_path, 2).strip('\n').strip('\"').strip(',')
+        input_list = line.split(':')
+        for tnn_input in input_list:
+            name, size, n, c, h, w, data_type = tnn_input.strip(' ').split(' ')
+            input_info.update({name: [int(n), int(c), int(h), int(w)]})
+    else:
+        logging.error("Unspport TNN model version\n")
+        sys.exit(-1)
     return input_info
 
 
