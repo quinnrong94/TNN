@@ -516,7 +516,7 @@ int Onnx2TNN::OnnxExtractBlobWeights() {
     TransferGlobalMaxPool(mutable_graph, index_nodes, weights, node_reference, blob_names);
 
     // onnx_op chain fusion
-    // FuseMatMul(mutable_graph, index_nodes, weights, node_reference, blob_names);
+    FuseMatMul(mutable_graph, index_nodes, weights, node_reference, blob_names);
     // FuseShuffleChannel(mutable_graph, index_nodes, weights, node_reference, blob_names);
     FuseLogSigmoid(mutable_graph, index_nodes, weights, node_reference, blob_names);
     FuseSoftmax(mutable_graph, index_nodes, weights, node_reference, blob_names);
@@ -529,7 +529,7 @@ int Onnx2TNN::OnnxExtractBlobWeights() {
 
     FuseSignedMul(mutable_graph, index_nodes, weights, node_reference, blob_names);
 
-    // FuseGEMM(mutable_graph, index_nodes, weights, node_reference, blob_names);
+    FuseGEMM(mutable_graph, index_nodes, weights, node_reference, blob_names);
     FuseDeconv(mutable_graph, index_nodes, weights, node_reference, blob_names);
     FuseConv(mutable_graph, index_nodes, weights, node_reference, blob_names);
 
