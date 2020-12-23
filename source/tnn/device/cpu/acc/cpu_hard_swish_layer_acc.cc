@@ -37,8 +37,6 @@ Status CpuHardSwishLayerAcc::Forward(const std::vector<Blob *> &inputs, const st
     const float beta  = layer_param->beta;
     const float minV  = -beta / alpha;
     const float maxV  = (1.0f - beta) / alpha;
-    LOGD("alpha: %.6f  beta: %.6f\n", alpha, beta);
-    LOGD("minV: %.6f  maxV: %.6f\n", minV, maxV);
 
     Blob *input_blob_0 = inputs[0];
     Blob *input_blob_1 = inputs.size() > 1 ? inputs[1] : input_blob_0;

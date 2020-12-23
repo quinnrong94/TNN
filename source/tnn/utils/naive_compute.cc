@@ -514,7 +514,7 @@ void DealOutput(Blob *output_blob, const int num_kept, const int num,
     float *top_data = static_cast<float *>(output_blob->GetHandle().base);
     // update the output shape
     if (num_kept == 0) {
-        LOGD("%s:Couldn't find any detections.", __FUNCTION__);
+        LOGD("%s:Couldn't find any detections.\n", __FUNCTION__);
         top_shape[2] = num;
         // top[0]->Reshape(top_shape);
         output_blob->GetBlobDesc().dims[2] = num;

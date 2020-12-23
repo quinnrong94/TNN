@@ -50,8 +50,8 @@
         }                                                                                                              \
     } while (0)
 
-#define GET_INT_1(var) GET_INT_1_OR_DEFAULT(var, 0)
-#define GET_FLOAT_1(var) GET_FLOAT_1_OR_DEFAULT(var, 0.0f)
+#define GET_INT_1(var) GET_INT_1_OR_DEFAULT(var, var)
+#define GET_FLOAT_1(var) GET_FLOAT_1_OR_DEFAULT(var, var)
 
 #define GET_INT_2(var1, var2)                                                                                          \
     GET_INT_1(var1);                                                                                                   \
