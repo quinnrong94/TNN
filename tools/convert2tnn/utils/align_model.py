@@ -26,7 +26,6 @@ import os
 import onnxruntime
 import sys
 
-import tensorflow as tf
 import numpy as np
 
 TNN_MAGIC_NUMBER = 0x0FABC0002
@@ -88,6 +87,8 @@ def run_onnx(model_path: str, input_path: str, input_info: dict) -> str:
     return output_path
 
 def run_tflite(model_path: str, input_path: str, input_info: dict) -> str:
+    import tensorflow as tf
+
     output_path = input_path
     deli = "/"
     if output_path[-1] == "":
@@ -150,6 +151,7 @@ def get_input_shape_from_onnx(onnx_path) -> dict:
     return input_info
 
 def get_input_shape_from_tflite(tflite_path)->dict:
+    import tensorflow as tf
     input_info: dict={}
     interpreter = tf.lite.Interpreter(tflite_path)
     interpreter.allocate_tensors()
