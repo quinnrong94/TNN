@@ -135,7 +135,15 @@ TNN_NS::Status TFLite2Tnn::Convert2Tnn(TNN_NS::NetStructure& net_structure, TNN_
                 return status;
             }
             tflite::ActivationFunctionType activation_function_type = converter->ActivationType(operators[j], op_code);
-            status = converter->SeparateActivation(net_structure, activation_function_type);
+            bool need_separate_activation = converter->NeedSeparateActivation(net_structure, activation_function_type);
+            if (need_separate_activation) {
+                status = converter->SeparateActivation(net_structure, activation_function_type);
+                if (status != TNN_NS::TNN_CONVERT_OK) {
+                    LOGE("TFLite converter %s failed!\n", cur_layer->type_str.c_str());
+                    return status;
+                }
+            }
+            status = converter->InsertBlobs(net_structure, need_separate_activation);
             if (status != TNN_NS::TNN_CONVERT_OK) {
                 LOGE("TFLite converter %s failed!\n", cur_layer->type_str.c_str());
                 return status;

@@ -48,10 +48,6 @@ TNN_NS::Status TFLiteOpConverter::SeparateActivation(TNN_NS::NetStructure& net_s
                                                      tflite::ActivationFunctionType activation_function_type) {
     auto& layers = net_structure.layers;
     auto& layer  = layers.back();
-    if (activation_function_type == tflite::ActivationFunctionType_NONE || layer->type == TNN_NS::LAYER_CONVOLUTION ||
-        layer->type == TNN_NS::LAYER_DECONVOLUTION) {
-        return TNN_NS::TNN_CONVERT_OK;
-    }
     const std::string conv_output_suffix = "_output";
     const std::string activation_suffix  = "_activation";
     if (activation_function_type == tflite::ActivationFunctionType_RELU ||
@@ -78,6 +74,41 @@ TNN_NS::Status TFLiteOpConverter::SeparateActivation(TNN_NS::NetStructure& net_s
     } else {
         LOGE("TNN Converter unsupport activation function\n");
         return TNN_NS::TNNERR_CONVERT_UNSUPPORT_LAYER;
+    }
+    return TNN_NS::TNN_CONVERT_OK;
+}
+
+bool TFLiteOpConverter::NeedSeparateActivation(tnn::NetStructure& net_structure,
+                                               tflite::ActivationFunctionType activation_function_type) {
+    auto& layers = net_structure.layers;
+    auto& layer  = layers.back();
+    if (activation_function_type == tflite::ActivationFunctionType_NONE || layer->type == TNN_NS::LAYER_CONVOLUTION ||
+        layer->type == TNN_NS::LAYER_DECONVOLUTION) {
+        return false;
+    }
+    if (activation_function_type == tflite::ActivationFunctionType_RELU ||
+        activation_function_type == tflite::ActivationFunctionType_RELU6) {
+        return true;
+    } else {
+        LOGE("TFLite Converter: do not support this activation separate activation\n");
+        return false;
+    }
+}
+
+TNN_NS::Status TFLiteOpConverter::InsertBlobs(tnn::NetStructure& net_structure, bool separate_activation) {
+    int count = separate_activation ? 2 : 1;
+    for (int i = 0; i < count; i++) {
+        auto& cur_layer     = *(net_structure.layers.rbegin() + i);
+        const auto& inputs  = cur_layer->inputs;
+        const auto& outputs = cur_layer->outputs;
+        for (const auto& input_name : inputs) {
+            const auto& blob_name = input_name;
+            net_structure.blobs.insert(blob_name);
+        }
+        for (const auto& output_name : outputs) {
+            const auto& blob_name = output_name;
+            net_structure.blobs.insert(blob_name);
+        }
     }
     return TNN_NS::TNN_CONVERT_OK;
 }
