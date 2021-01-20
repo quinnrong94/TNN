@@ -2,32 +2,11 @@ name: android-arm-cpu
 on:
   push:
     branches:
-      - master
-    paths:
-      - 'CMakeLists.txt'
-      - 'cmake/**'
-      - 'include/tnn/**'
-      - 'scripts/build_android.sh'
-      - 'source/tnn/**'
-      - '!source/tnn/device/**'
-      - 'source/tnn/device/arm/**'
-      - 'source/tnn/device/cpu/**'
-      - 'source/tnn/device/opencl/**'
-      - '!source/tnn/extern_wrapper/**'
+      - '**'
   pull_request:
     branches:
-      - master
-    paths:
-      - 'CMakeLists.txt'
-      - 'cmake/**'
-      - 'include/tnn/**'
-      - 'scripts/build_android.sh'
-      - 'source/tnn/**'
-      - '!source/tnn/device/**'
-      - 'source/tnn/device/arm/**'
-      - 'source/tnn/device/cpu/**'
-      - 'source/tnn/device/opencl/**'
-      - '!source/tnn/extern_wrapper/**'
+      - '**'
+
 jobs:
   android:
     runs-on: ubuntu-latest
@@ -35,5 +14,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: configure
       run: sudo apt-get install attr
+    - name: preflight
+      run: ./scripts/.travis/preflight_arm.sh
     - name: build
       run: export ANDROID_NDK=$ANDROID_HOME/ndk-bundle && ./scripts/build_android.sh
