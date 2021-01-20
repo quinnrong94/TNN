@@ -18,7 +18,7 @@ jobs:
       id: preflight
       run: |
         echo '::set-output name=SKIP::0'
-        ./scripts/.travis/preflight_arm.sh || echo $? && echo $? && '::set-output name=SKIP::${$?}'
+        ./scripts/.travis/preflight_arm.sh || ret=$? && echo '::set-output name=SKIP::${ret}' && echo ${ret}
 
   android:
     needs: [setup]
