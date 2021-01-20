@@ -8,13 +8,23 @@ on:
       - '**'
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      SKIP: ${{ steps.get_version.outputs.VERSION }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Preflight
+      id: preflight
+      run: ./scripts/.travis/preflight_arm.sh || echo ::set-output name=SKIP::TRUE}
+
   android:
+    needs: [setup]
+    if: ${{ needs.setup.outputs.SKIP != 'TRUE' }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: configure
       run: sudo apt-get install attr
-    - name: preflight
-      run: ./scripts/.travis/preflight_arm.sh || echo "skip"
     - name: build
       run: export ANDROID_NDK=$ANDROID_HOME/ndk-bundle && ./scripts/build_android.sh
