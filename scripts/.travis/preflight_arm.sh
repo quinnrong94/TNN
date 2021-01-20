@@ -3,7 +3,7 @@
 set -e
 
 git fetch origin master:master
-CHANGED_FILES=`git diff --name-only master
+CHANGED_FILES=`git diff --name-only master`
 ARM_RELEVANT=False
 
 PATTERNS=("CMakeLists.txt"
