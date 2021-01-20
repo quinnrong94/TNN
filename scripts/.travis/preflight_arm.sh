@@ -38,5 +38,5 @@ if [[ $ARM_RELEVANT == True ]]; then
   echo "Code changes relevant to arm, continuing with build."
 else
   echo "Code changes not relevant to arm, exiting."
-  exit 1
+  exit 11
 fi
