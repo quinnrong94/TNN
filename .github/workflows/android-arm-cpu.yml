@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Preflight
       id: preflight
-      run: ./scripts/.travis/preflight_arm.sh || echo ::set-output name=SKIP::TRUE}
+      run: ./scripts/.travis/preflight_arm.sh || echo ::set-output name=SKIP::TRUE
 
   android:
     needs: [setup]
@@ -27,4 +27,6 @@ jobs:
     - name: configure
       run: sudo apt-get install attr
     - name: build
-      run: export ANDROID_NDK=$ANDROID_HOME/ndk-bundle && ./scripts/build_android.sh
+      run: |
+        echo ${{ needs.setup.outputs.SKIP }}
+        export ANDROID_NDK=$ANDROID_HOME/ndk-bundle && ./scripts/build_android.sh
