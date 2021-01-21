@@ -5,6 +5,8 @@ set -e
 git fetch origin master:ci-origin-master-ref
 CHANGED_FILES=`git diff --name-only ci-origin-master-ref`
 ARM_RELEVANT=False
+echo `git status`
+echo `git log`
 
 PATTERNS=("CMakeLists.txt"
           "cmake/"
