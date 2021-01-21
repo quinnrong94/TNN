@@ -7,6 +7,7 @@ CHANGED_FILES=`git diff --name-only ci-origin-master-ref`
 ARM_RELEVANT=False
 echo `git status`
 echo `git log`
+echo $CHANGED_FILES
 
 PATTERNS=("CMakeLists.txt"
           "cmake/"
