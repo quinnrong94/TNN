@@ -2,8 +2,15 @@
 
 set -e
 
-git fetch origin master:ci-origin-master-ref
-CHANGED_FILES=`git diff --name-only ci-origin-master-ref`
+BRANCH=`git symbolic-ref --short -q HEAD`
+echo "\n>> Current Branch:" ${BRANCH}
+if [[ ${BRANCH} == 'master' ]]; then
+  echo "On branch master, continuing with build."
+  exit 0
+fi
+
+git fetch origin master:master
+CHANGED_FILES=`git diff --name-only master`
 ARM_RELEVANT=False
 echo `git status`
 echo `git log`
