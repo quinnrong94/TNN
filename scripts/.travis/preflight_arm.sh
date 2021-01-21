@@ -2,9 +2,12 @@
 
 set -e
 
-git fetch origin master:master
-CHANGED_FILES=`git diff --name-only master...${TRAVIS_COMMIT}`
+git fetch origin master:ci-origin-master-ref
+CHANGED_FILES=`git diff --name-only ci-origin-master-ref`
 ARM_RELEVANT=False
+echo `git status`
+echo `git log`
+echo $CHANGED_FILES
 
 PATTERNS=("CMakeLists.txt"
           "cmake/"
@@ -38,5 +41,5 @@ if [[ $ARM_RELEVANT == True ]]; then
   echo "Code changes relevant to arm, continuing with build."
 else
   echo "Code changes not relevant to arm, exiting."
-  exit 1
+  exit 11
 fi
