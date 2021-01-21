@@ -3,7 +3,7 @@
 set -e
 
 BRANCH=`git symbolic-ref --short -q HEAD`
-echo "\n>> Current Branch:" ${BRANCH}
+echo -e "\n>> Current Branch:" ${BRANCH}
 if [[ ${BRANCH} == 'master' ]]; then
   echo "On branch master, continuing with build."
   exit 0
